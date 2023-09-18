@@ -19,8 +19,12 @@
 name: OnOlarisPush
 
 on:
-    push:
-      branches: '3.0.0-testing'
+  workflow_dispatch:
+
+env:
+  BASE_TAG: ${{ github.ref_name }}
+  TAG: $(date +%y%m%d%H%M)
+
 
 jobs:
     dispatch:        
@@ -30,49 +34,49 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
-            repository: nuvolaris/nuvolaris-testing
+            repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "kind"}'
+            client-payload: '{"platform": "kind","tag":$BASE_TAG-$TAG}'
       - name: Dispatch K3s
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
-            repository: nuvolaris/nuvolaris-testing
+            repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "k3s"}'            
+            client-payload: '{"platform": "k3s","tag":$BASE_TAG-$TAG}'            
       - name: Dispatch Mk8s
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
             repository: nuvolaris/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "mk8s"}' 
+            client-payload: '{"platform": "mk8s","tag":$BASE_TAG-$TAG}' 
       - name: Dispatch EKS
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
-            repository: nuvolaris/nuvolaris-testing
+            repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "eks"}'  
+            client-payload: '{"platform": "eks","tag":$BASE_TAG-$TAG}'  
       - name: Dispatch AKS
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
-            repository: nuvolaris/nuvolaris-testing
+            repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "aks"}'  
+            client-payload: '{"platform": "aks","tag":$BASE_TAG-$TAG}'  
       - name: Dispatch GKE
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
-            repository: nuvolaris/nuvolaris-testing
+            repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "gke"}'
+            client-payload: '{"platform": "gke","tag":$BASE_TAG-$TAG}'
       - name: Dispatch OSH
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
-            repository: nuvolaris/nuvolaris-testing
+            repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "osh"}'                                              
+            client-payload: '{"platform": "osh","tag":$BASE_TAG-$TAG}'                                            
             
