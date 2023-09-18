@@ -23,7 +23,6 @@ on:
 
 env:
   BASE_TAG: ${{ github.ref_name }}
-  TAG: $(date +%y%m%d%H%M)
 
 jobs:
     dispatch:        
@@ -31,6 +30,8 @@ jobs:
       steps:        
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Create tag
+        run: export TAG=$(date +%y%m%d%H%M)         
       - name: Tag
         run: git tag $BASE_TAG-$TAG
       - name: Push Tag
