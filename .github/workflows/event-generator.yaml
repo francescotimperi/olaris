@@ -21,19 +21,20 @@ name: OnOlarisPush
 on:
   workflow_dispatch:
 
-env:
-  BASE_TAG: ${{ github.ref_name }}
-
 jobs:
     dispatch:        
       runs-on: ubuntu-latest
       steps:        
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Create tag
-        run: export TAG=$(date +%y%m%d%H%M)         
-      - name: Tag
-        run: git tag $BASE_TAG-$TAG
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +%y%m%d%H%M)"             
+      - name: Get current date
+        id: itag
+        run: echo "::set-output name=tag::${{ format('{0}-{1}', github.ref_name, steps.date.outputs.date) }}"      
+      - name: Tag        
+        run: git tag ${{ steps.itag.outputs.tag }}
       - name: Push Tag
         run: git push origin --tags       
       - name: Dispatch Kind
@@ -42,47 +43,47 @@ jobs:
             event-type: olaris-testing-update
             repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "kind","tag":"$BASE_TAG-$TAG"}'
+            client-payload: '{"platform": "kind","tag":"${{ steps.itag.outputs.tag }}"}'
       - name: Dispatch K3s
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
             repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "k3s","tag":"$BASE_TAG-$TAG"}'            
+            client-payload: '{"platform": "k3s","tag":"${{ steps.itag.outputs.tag }}"}'            
       - name: Dispatch Mk8s
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
             repository: nuvolaris/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "mk8s","tag":"$BASE_TAG-$TAG"}' 
+            client-payload: '{"platform": "mk8s","tag":"${{ steps.itag.outputs.tag }}"}' 
       - name: Dispatch EKS
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
             repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "eks","tag":"$BASE_TAG-$TAG"}'  
+            client-payload: '{"platform": "eks","tag":"${{ steps.itag.outputs.tag }}"}'  
       - name: Dispatch AKS
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
             repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "aks","tag":"$BASE_TAG-$TAG"}'  
+            client-payload: '{"platform": "aks","tag":"${{ steps.itag.outputs.tag }}"}'  
       - name: Dispatch GKE
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
             repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "gke","tag":"$BASE_TAG-$TAG"'
+            client-payload: '{"platform": "gke","tag":"${{ steps.itag.outputs.tag }}"}'
       - name: Dispatch OSH
         uses: peter-evans/repository-dispatch@v2
         with:
             event-type: olaris-testing-update
             repository: francescotimperi/nuvolaris-testing
             token: ${{ secrets.PAT }}
-            client-payload: '{"platform": "osh","tag":"$BASE_TAG-$TAG"}'                                            
+            client-payload: '{"platform": "osh","tag":"${{ steps.itag.outputs.tag }}"}'                                         
             
