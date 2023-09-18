@@ -35,7 +35,7 @@ jobs:
       - name: Tag
         run: git tag $BASE_TAG-$TAG
       - name: Push Tag
-        run: push origin --tags       
+        run: git push origin --tags       
       - name: Dispatch Kind
         uses: peter-evans/repository-dispatch@v2
         with:
